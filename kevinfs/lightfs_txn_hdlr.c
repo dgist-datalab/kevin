@@ -778,7 +778,7 @@ int lightfs_bstore_txn_commit(DB_TXN *txn, uint32_t flags)
 		txn->state |= TXN_COMMITTED;
 		txn_hdlr->syncing_cnt++;
 		if (wq_has_sleeper(&txn_hdlr->wq)) {
-			//lightfs_error(__func__, "핸들러 깨울게\n");
+			//lightfs_error(__func__, "Waking up the handler\n");
 			wake_up(&txn_hdlr->wq);
 		}
 		spin_unlock_irqrestore(&txn_hdlr->txn_spin, irqflags);
@@ -1023,7 +1023,7 @@ static enum lightfs_c_txn_state lightfs_txn_calc_order(DB_TXN *txn, DB_C_TXN **m
 	enum lightfs_c_txn_state ret = C_TXN_ORDERLESS;
 	DB_C_TXN *best_c_txn = NULL, *target_c_txn = NULL;
 	
-	//TODO: parent 추가
+	//TODO: Add parent
 
 	/*
 	if (txn_hdlr->orderless_c_txn_cnt == 0) {
@@ -1325,9 +1325,7 @@ skip_sync:
 			txn_hdlr->running_c_txn_cnt++;
 			txn_hdlr->running_c_txn = c_txn;
 			if (txn_hdlr->running_c_txn_cnt >= RUNNING_C_TXN_LIMIT) {
-				if (txn_hdlr->running_c_txn_cnt == 0) {
-					lightfs_error(__func__, "왜그래1\n");
-				}
+				//if (txn_hdlr->running_c_txn_cnt == 0) {}
 				c_txn->committing_cnt = txn_hdlr->running_c_txn_cnt;
 				c_txn->state |= TXN_FLUSH;
 				txn_hdlr->running_c_txn_id = 0;

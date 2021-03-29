@@ -863,7 +863,7 @@ int lightfs_bstore_trunc(DB *data_db, DBT *meta_dbt,
 	do {
 		ret = data_db->del(data_db, txn, &max_data_key_dbt, LIGHTFS_DATA_DEL);
 		if (ret) {
-			lightfs_error(__func__, "왜...\n");
+			lightfs_error(__func__, "Shouldn't reach\n");
 		} else {
 			current_block_num++;
 			copy_data_dbt_from_inode(&max_data_key_dbt, inode, current_block_num);
@@ -873,11 +873,9 @@ int lightfs_bstore_trunc(DB *data_db, DBT *meta_dbt,
 #endif
 
 	/*
-	//lightfs_error(__func__, "안들어가냐??...%d %d\n", ret, offset);
 	if (!ret && offset) {
 		TXN_GOTO_LABEL(update_retry);
 		lightfs_bstore_txn_begin(sbi->db_dev, NULL, &txn, TXN_MAY_WRITE);
-		//lightfs_error(__func__, "안들어가냐??...\n");
 		dbt_setup(&value, NULL, 0);
 		lightfs_data_key_set_blocknum(((char *)min_data_key_dbt.data),
 		                           min_data_key_dbt.size, new_num);

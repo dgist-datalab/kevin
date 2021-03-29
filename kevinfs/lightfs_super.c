@@ -1250,9 +1250,9 @@ static int lightfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 		goto abort;
 	}
 
-	if (new_inode) { // 새로운 파일이 이미 존재
-		if (S_ISDIR(old_inode->i_mode)) { // 기존이 디렉토리
-			if (!S_ISDIR(new_inode->i_mode)) { // 새로운게 일반 파일
+	if (new_inode) { // New file already exists
+		if (S_ISDIR(old_inode->i_mode)) { // and it is a directory
+			if (!S_ISDIR(new_inode->i_mode)) { // and it is a file
 				ret = -ENOTDIR;
 	lightfs_error(__func__, "NOTDIR1\n");
 				goto abort;
@@ -1269,7 +1269,7 @@ static int lightfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	lightfs_error(__func__, "NOTEMPTY\n");
 				goto abort;
 			}
-		} else { // old 가 그냥 파일
+		} else { // old is a regular file
 			if (S_ISDIR(new_inode->i_mode)) {
 				ret = -ENOTDIR;
 	lightfs_error(__func__, "NOTDIR2\n");
