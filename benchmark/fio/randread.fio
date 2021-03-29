@@ -1,0 +1,11 @@
+[global]
+include global.fio
+
+[Random Read]
+rw=randread
+iodepth=128
+
+numjobs=16
+io_size=32G
+io_limit=2G
+

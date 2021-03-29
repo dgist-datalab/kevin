@@ -1,0 +1,8 @@
+[global]
+include global.fio
+
+[Sequenctial Read]
+rw=read
+bs=128K
+iodepth=128
+numjobs=1

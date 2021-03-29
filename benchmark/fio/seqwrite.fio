@@ -1,0 +1,8 @@
+[global]
+include global.fio
+
+[Sequential Write]
+rw=write
+iodepth=128
+bs=128k
+numjobs=1
