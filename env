@@ -3,6 +3,7 @@
 
 export kevin_root_dir="/home/koo/kevin"
 export flash_ftl_driver_dir="/home/kukania/Koofs_proj/FlashFTLDriver"
+export flash_driver_dir="/koo/home/koo/src/FlashDriver2"
 export tpcc_owner="ssjy806"
 export tpcc_dir="/home/ssjy806/tpcc"
 export kernel_src="/home/koo/linux-stable.git"

@@ -32,7 +32,7 @@
 # 1MB I/Os.  The thread stops after 5000 files ($count/num of flowops) have
 # been created and written to.
 
-set $dir=/ext4
+set $dir=/bench
 set $count=32000000
 set $filesize=4k
 set $iosize=1m

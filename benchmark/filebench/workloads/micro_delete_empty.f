@@ -29,7 +29,7 @@
 # Fire off 16 threads ($nthreads), where each thread stops after
 # deleting 1000 ($count) files.
 
-set $dir=/ext4
+set $dir=/bench
 set $count=16000000
 set $filesize=0k
 set $nfiles=8000000

@@ -23,7 +23,7 @@
 # Use is subject to license terms.
 #
 
-set $dir=/ext4
+set $dir=/bench
 set $eventrate=0
 set $runtime=5
 set $iosize=2k
