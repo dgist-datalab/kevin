@@ -43,7 +43,7 @@ do_ext4() {
         output_file_slab="${output_dir_org_slab}/${workload}"
 
         ${kevin_root_dir}/real/setup_cheeze.sh
-        ssh root@pt1 "cd /home/flashdriver/Koofs_proj/FlashFTLDriver/; ./cheeze_block_driver > /c0/$output_file_flashdriver 2>&1 < /dev/null" &
+        ssh root@pt1 "cd ${flash_ftl_driver_dir}/; ./cheeze_block_driver > /c0/$output_file_flashdriver 2>&1 < /dev/null" &
         while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
         tail -f ${output_file_flashdriver} | sed '/now waiting req/ q'
         now=$(date +"%T")

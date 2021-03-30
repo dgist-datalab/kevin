@@ -23,7 +23,7 @@
 # Use is subject to license terms.
 #
 
-set $dir=/media
+set $dir=/bench
 set $nfiles=4000000
 set $meandirwidth=100
 set $meanfilesize=4k

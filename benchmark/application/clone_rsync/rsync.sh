@@ -50,7 +50,7 @@ mkmount() {
 
 start_cheeze() {
     ${kevin_root_dir}/real/setup_cheeze.sh
-    ssh root@pt1 "cd /home/flashdriver/Koofs_proj/FlashFTLDriver/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
+    ssh root@pt1 "cd ${flash_ftl_driver_dir}/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
     while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
     tail -f ${output_file_flashdriver} | sed '/now waiting req/ q'
     mkmount
@@ -141,7 +141,7 @@ mount -t tmpfs -o ro nodev ${target_dir}
 mkdir -p /linux
 mount -t tmpfs -o size=4G nodev /linux
 cd /linux
-git clone /home/koo/linux-stable.git
+git clone ${kernel_src}
 cd -
 
 for test in ext4_metadata_journal ext4_data_journal xfs f2fs btrfs

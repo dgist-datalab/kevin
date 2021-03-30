@@ -69,7 +69,7 @@ do_ext4() {
         dmesg -c > /dev/null 2>&1
 
         ${kevin_root_dir}/real/setup_cheeze.sh
-        ssh root@pt1 "cd /home/flashdriver/Koofs_proj/FlashFTLDriver/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
+        ssh root@pt1 "cd ${flash_ftl_driver_dir}/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
         while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
         tail -f ${output_file_flashdriver} | sed '/now waiting req/ q'
         now=$(date +"%T")
@@ -97,7 +97,7 @@ do_ext4() {
         until pgrep -f mysql > /dev/null; do echo mysql still down; sleep 1; done
         sleep 10
 
-        cd /home/ssjy806/tpcc/
+        cd ${tpcc_dir}/
         ./load.sh >> ${output_file_perf} 2>&1
         cd -
 

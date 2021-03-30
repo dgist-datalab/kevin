@@ -3,7 +3,7 @@
 set -eo pipefail
 
 rmmod cheeze 2>/dev/null || true
-insmod /home/koo/cheeze/cheeze.ko
+insmod $blk_cheeze_ko
 
 TMP=/tmp/setup_vm
 
