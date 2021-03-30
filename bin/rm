@@ -1,0 +1,20 @@
+#!/bin/bash
+
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+bold() {
+    echo "$BOLD$@$NORMAL" 1>&2
+}
+
+# Safe rm to prevent `rm -rf /*`
+for var in "$@"; do
+  if echo "$var" | grep -q '^/dev'; then
+    echo
+    bold "Attempted to rm -rf /, please review your script"
+    bold $0 ${1:+"$@"}
+    echo
+    exit 1
+  fi
+done
+
+exec /bin/rm ${1:+"$@"}
