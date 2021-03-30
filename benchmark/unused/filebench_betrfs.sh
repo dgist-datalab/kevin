@@ -68,7 +68,7 @@ do_ext4() {
 
         dmesg -c > /dev/null 2>&1
 
-        ${kevin_root_dir}/real/setup_cheeze.sh
+        ${kevin_root_dir}/benchmark/setup_cheeze.sh
         ssh root@pt1 "cd /home/kukania/Koofs_proj/FlashFTLDriver/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_kukania 2>&1 < /dev/null" &
         while [ ! -f ${output_file_kukania} ]; do sleep 0.1; done
         tail -f ${output_file_kukania} | sed '/now waiting req/ q'
@@ -81,7 +81,7 @@ do_ext4() {
         flush
         sleep 5
 
-        $kevin_root_dir/benchmark/blktrace.sh ${dev_path} ${output_file_cnt}
+        $kevin_root_dir/benchmark/general/blktrace.sh ${dev_path} ${output_file_cnt}
         iostat -c -d -x ${dev_path} 1 -m > ${output_file_stat} &
         vmstat 1 | gawk '{now=strftime("%Y-%m-%d %T "); print now $0}' > ${output_file_vmstat} &
         dmesg -w > ${output_file_dmesg} &

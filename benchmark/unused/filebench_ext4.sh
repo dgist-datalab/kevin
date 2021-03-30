@@ -53,7 +53,7 @@ do_ext4() {
         #sleep 2000
         flush
         sleep 5
-        $kevin_root_dir/benchmark/blktrace.sh ${dev_path} ${output_file_cnt}
+        $kevin_root_dir/benchmark/general/blktrace.sh ${dev_path} ${output_file_cnt}
         iostat -c -d -x ${dev_path} 1 -m > ${output_file_stat} &
         sleep 5
         #bash -c "echo "'$$'" > /sys/fs/cgroup/bench/cgroup.procs; filebench -f ${workload} >> ${output_file_perf}"
@@ -86,6 +86,6 @@ do
     output_dir_org_cnt="$log_path/$test/trace"
     output_dir_org_kukania="$log_path/$test/kukania"
     output_dir_org_stat="$log_path/$test/iostat"
-    fs_sh="${kevin_root_dir}/benchmark/$test.sh"
+    fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
     do_ext4
 done

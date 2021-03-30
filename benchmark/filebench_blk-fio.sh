@@ -60,7 +60,7 @@ do_ext4() {
         flush
         sleep 300
 
-        $kevin_root_dir/benchmark/blktrace.sh ${dev_path} ${output_file_cnt}
+        $kevin_root_dir/benchmark/general/blktrace.sh ${dev_path} ${output_file_cnt}
         iostat -c -d -x ${dev_path} 1 -m >> ${output_file_stat} &
         vmstat 1 | gawk '{now=strftime("%Y-%m-%d %T "); print now $0}' >> ${output_file_vmstat} &
 
@@ -105,7 +105,7 @@ do
         output_dir_org_stat="$log_path/$test/iostat"
         output_dir_org_vmstat="$log_path/$test/vmstat"
         output_dir_org_slab="$log_path/$test/slab"
-        fs_sh="${kevin_root_dir}/benchmark/$test.sh"
+        fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
 
         alias=seqwrite
         setup_log
