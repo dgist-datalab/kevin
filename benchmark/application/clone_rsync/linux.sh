@@ -94,7 +94,7 @@ build() {
     \time -v bash -c "cd ${target_dir}/linux-stable; make allyesconfig; make -j8; sync; cd -"
 }
 
-do_ext4() {
+run_bench() {
     #for workload in *.f
     #do
         dmesg -c > /dev/null 2>&1
@@ -165,11 +165,11 @@ do
 
     workload=clone
     setup_log
-    do_ext4
+    run_bench
 
     workload=build
     setup_log
-    do_ext4
+    run_bench
 
     kill_cheeze
 done

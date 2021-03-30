@@ -106,7 +106,7 @@ fbench() {
     \time -v bash -c "filebench -f ${fload}"
 }
 
-do_ext4() {
+run_bench() {
     #for workload in *.f
     #do
         dmesg -c > /dev/null 2>&1
@@ -180,11 +180,11 @@ do
 
         workload=frag
         setup_log
-        do_ext4
+        run_bench
 
         workload=fbench
         setup_log
-        do_ext4
+        run_bench
 
         kill_cheeze
     done

@@ -56,7 +56,7 @@ setup_log() {
     output_file_slab="${output_dir_org_slab}/${alias}"
 }
 
-do_ext4() {
+run_bench() {
     #for workload in *.f
     #do
         now=$(date +"%T")
@@ -117,7 +117,7 @@ do
         start_cheeze
 
         workload=seqwrite.fio
-        do_ext4
+        run_bench
         flush
 
         kill_cheeze
@@ -126,11 +126,11 @@ do
         start_cheeze
 
         workload=seqwrite.fio
-        do_ext4
+        run_bench
         flush
 
         workload=seqread.fio
-        do_ext4
+        run_bench
         flush
 
         kill_cheeze
@@ -139,11 +139,11 @@ do
         start_cheeze
 
         workload=seqwrite.fio
-        do_ext4
+        run_bench
         flush
 
         workload=randread.fio
-        do_ext4
+        run_bench
         flush
 
         kill_cheeze
@@ -152,7 +152,7 @@ do
         start_cheeze
 
         workload=randwrite.fio
-        do_ext4
+        run_bench
         flush
 
         kill_cheeze
@@ -161,11 +161,11 @@ do
         start_cheeze
 
         workload=randwrite.fio
-        do_ext4
+        run_bench
         flush
 
         workload=seqread.fio
-        do_ext4
+        run_bench
         flush
 
         kill_cheeze
@@ -174,11 +174,11 @@ do
         start_cheeze
 
         workload=randwrite.fio
-        do_ext4
+        run_bench
         flush
 
         workload=randread.fio
-        do_ext4
+        run_bench
         flush
 
         kill_cheeze

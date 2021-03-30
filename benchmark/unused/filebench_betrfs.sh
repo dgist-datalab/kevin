@@ -50,7 +50,7 @@ destroy() {
     sleep 5
 }
 
-do_ext4() {
+run_bench() {
     for workload in *.f
     do
         echo "=============================================="
@@ -135,5 +135,5 @@ do
     output_dir_org_dmesg="$log_path/$test/dmesg"
     fs_sh="/mnt/home/koo/src/betrfs/${test}.sh"
     clean_sh="/mnt/home/koo/src/betrfs/${test}-clean.sh"
-    do_ext4
+    run_bench
 done

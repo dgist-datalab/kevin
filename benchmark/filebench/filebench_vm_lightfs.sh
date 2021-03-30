@@ -49,7 +49,7 @@ destroy() {
     rmmod lightfs
 }
 
-do_ext4() {
+run_bench() {
     for workload in *.f
     do
         echo "=============================================="
@@ -128,14 +128,11 @@ mount -t tmpfs -o ro nodev ${target_dir}
 # rmmod cheeze after setup_vm.sh
 rmmod cheeze 2>/dev/null || true
 
-#for test in ext4_metadata_journal ext4_data_journal xfs f2fs btrfs
-for test in ext4_metadata_journal
-do
-    output_dir_org_perf="$log_path/$test/perf"
-    output_dir_org_flashdriver="$log_path/$test/flashdriver"
-    output_dir_org_vmstat="$log_path/$test/vmstat"
-    output_dir_org_slab="$log_path/$test/slab"
-    output_dir_org_dmesg="$log_path/$test/dmesg"
-    fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
-    do_ext4
-done
+output_dir_org_perf="$log_path/perf"
+output_dir_org_flashdriver="$log_path/flashdriver"
+output_dir_org_vmstat="$log_path/vmstat"
+output_dir_org_slab="$log_path/slab"
+output_dir_org_dmesg="$log_path/dmesg"
+fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
+
+run_bench

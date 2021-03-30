@@ -49,7 +49,7 @@ destroy() {
     sleep 5
 }
 
-do_ext4() {
+run_bench() {
     workload=tpcc
     #for workload in *.f
     #do
@@ -159,5 +159,5 @@ do
     output_dir_org_slab="$log_path/$test/slab"
     output_dir_org_dmesg="$log_path/$test/dmesg"
     fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
-    do_ext4
+    run_bench
 done

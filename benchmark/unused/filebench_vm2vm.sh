@@ -36,7 +36,7 @@ setup_cgroups() {
     echo $((16 * 1024 * 1024 * 1024)) > /sys/fs/cgroup/bench/memory.max
 }
 
-do_ext4() {
+run_bench() {
     for workload in fileserver_gamma_fuse.f varmail_gamma_fuse.f webproxy_gamma_fuse.f webserver_gamma_fuse.f
     do
         echo "=============================================="
@@ -91,5 +91,5 @@ do
     output_dir_org_kukania="$log_path/$test/kukania"
     output_dir_org_stat="$log_path/$test/iostat"
     fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
-    do_ext4
+    run_bench
 done

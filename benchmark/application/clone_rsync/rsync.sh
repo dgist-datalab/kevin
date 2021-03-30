@@ -90,7 +90,7 @@ rsyncf() {
     \time -v rsync -a --fsync /linux/linux-stable/ ${target_dir}/
 }
 
-do_ext4() {
+run_bench() {
     #for workload in *.f
     #do
         dmesg -c > /dev/null 2>&1
@@ -167,7 +167,7 @@ do
 
     workload=rsyncf
     setup_log
-    do_ext4
+    run_bench
 
     kill_cheeze
 done
