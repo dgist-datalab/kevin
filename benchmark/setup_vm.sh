@@ -26,6 +26,6 @@ until timeout 0.5 ssh root@pt1 true 2>/dev/null; do sleep 0.5; done
 echo "VM online"
 
 # Setup VCU
-ssh root@pt1 'sync; program-vcu108.sh; sync' || true
+ssh root@pt1 "sync; $setup_vcu; sync" || true
 
 echo "VM setup done"

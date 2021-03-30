@@ -7,6 +7,7 @@ export tpcc_owner="ssjy806"
 export tpcc_dir="/home/ssjy806/tpcc"
 export kernel_src="/home/koo/linux-stable.git"
 export blk_cheeze_ko="/home/koo/cheeze/cheeze.ko"
+export setup_vcu="/home/kukania/amf-driver/programFPGA/program-vcu108.sh"
 
 # Use saferm
 export PATH=$(realpath bin):$PATH
