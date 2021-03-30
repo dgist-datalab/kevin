@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$kevin_env_set" != "1" ]]; then
+  echo "Please source env for kevin"
+  exit 1
+fi
+
 set -eo pipefail
 
 fallocate -l 4G /dev/hugepages/qemutest

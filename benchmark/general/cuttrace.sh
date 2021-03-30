@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$kevin_env_set" != "1" ]]; then
+  echo "Please source env for kevin"
+  exit 1
+fi
+
 # Usage:
 # cd ~/filebench_vmlog-20201015-010514
 # ~/kevin/benchmark/cuttrace.sh

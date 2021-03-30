@@ -10,3 +10,5 @@ export blk_cheeze_ko="/home/koo/cheeze/cheeze.ko"
 
 # Use saferm
 export PATH=$(realpath bin):$PATH
+
+export kevin_env_set=1

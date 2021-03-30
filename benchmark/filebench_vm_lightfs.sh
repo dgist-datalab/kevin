@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$kevin_env_set" != "1" ]]; then
+  echo "Please source env for kevin"
+  exit 1
+fi
+
 log_path="/log/filebench_vmlog-$(date +'%Y%m%d-%H%M%S')"
 dev_path="/dev/cheeze0"
 target_dir="/bench"

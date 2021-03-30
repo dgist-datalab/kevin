@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [[ "$kevin_env_set" != "1" ]]; then
+  echo "Please source env for kevin"
+  exit 1
+fi
+
 mkdir -p vmsum
 ls vmstat/ | sort | while read workload; do
   #LINES=$(cat vmstat/$workload | awk '{print $16, $17}' | grep '^[0-9]' | awk '{print $1+$2}' | grep -v '^100' | wc -l)
