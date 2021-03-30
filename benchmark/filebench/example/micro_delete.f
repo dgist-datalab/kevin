@@ -22,23 +22,29 @@
 # Copyright 2008 Sun Microsystems, Inc.  All rights reserved.
 # Use is subject to license terms.
 #
-# Creates a fileset with $ndirs empty leaf directories then rmdir's all of them
-#
+# ident	"%Z%%M%	%I%	%E% SMI"
+
+# Create a fileset of 50,000 entries ($nfiles), where each file's size is set
+# via a gamma distribution with the median size of 16KB ($filesize).
+# Fire off 16 threads ($nthreads), where each thread stops after
+# deleting 1000 ($count) files.
+
 set $dir=/bench
-set $ndirs=8000000
+set $count=16000000
+set $filesize=4k
+set $nfiles=8000000
 set $meandirwidth=100
 set $nthreads=16
-set $count=16000000
 
 set mode quit alldone
 
-define fileset name=bigfileset,path=$dir,size=0,leafdirs=$ndirs,dirwidth=$meandirwidth,prealloc
+define fileset name=bigfileset,path=$dir,size=$filesize,entries=$nfiles,dirwidth=$meandirwidth,prealloc=100,paralloc
 
-define process name=remdir,instances=1
+define process name=filedelete,instances=1
 {
-  thread name=removedirectory,memsize=1m,instances=$nthreads
+  thread name=filedeletethread,memsize=10m,instances=$nthreads
   {
-    flowop removedir name=dirremover,filesetname=bigfileset
+    flowop deletefile name=deletefile1, filesetname=bigfileset
     flowop opslimit name=limit
     flowop finishoncount name=finish,value=$count
   }
@@ -46,4 +52,4 @@ define process name=remdir,instances=1
 
 run 100000000
 
-echo  "RemoveDir Version 1.0 personality successfully loaded"
+echo  "FileMicro-Delete Version 2.4 personality successfully loaded"

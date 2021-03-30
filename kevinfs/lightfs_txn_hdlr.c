@@ -472,7 +472,7 @@ int lightfs_bstore_txn_sync_put(DB *db, DB_TXN *txn, DBT *key, DBT *value, uint3
 	lightfs_txn_buf_init(txn_buf);
 	txn_buf->txn_id = txn->txn_id;
 	txn_buf->db = db;
-	txn_buf->buf = (char*)kmem_cache_alloc(lightfs_meta_buf_cachep, GFP_NOIO);
+	txn_buf->buf = (char*)kmem_cache_alloc(lightfs_meta_buf_cachep, GFP_KERNEL);
 	txn_buf_setup_cpy(txn_buf, value->data, off, value->size, type);
 	txn_buf->len = PAGE_SIZE;
 	alloc_txn_buf_key_from_dbt(txn_buf, key);
