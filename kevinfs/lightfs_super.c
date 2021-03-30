@@ -470,7 +470,6 @@ static int lightfs_readpages(struct file *filp, struct address_space *mapping,
 
 	lightfs_io = lightfs_io_alloc(nr_pages);
 	if (!lightfs_io) {
-		pr_info("asdasdasd\n");
 		return -ENOMEM;
 	}
 	lightfs_io_setup(lightfs_io, pages, nr_pages, mapping);
@@ -1238,7 +1237,7 @@ static int lightfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 	old_meta_dbt = lightfs_get_write_lock(LIGHTFS_I(old_inode));
 	new_inode = new_dentry->d_inode;
 	new_inode_meta_dbt = new_inode ?
-		lightfs_get_write_lock(LIGHTFS_I(new_inode)) : NULL;
+	lightfs_get_write_lock(LIGHTFS_I(new_inode)) : NULL;
 	//prelock_children_for_rename(old_dentry, &locked_children);
 
 	TXN_GOTO_LABEL(retry);
@@ -1254,7 +1253,6 @@ static int lightfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 		if (S_ISDIR(old_inode->i_mode)) { // and it is a directory
 			if (!S_ISDIR(new_inode->i_mode)) { // and it is a file
 				ret = -ENOTDIR;
-	lightfs_error(__func__, "NOTDIR1\n");
 				goto abort;
 			}
 			err = lightfs_dir_is_empty(sbi->meta_db, new_inode_meta_dbt,
@@ -1266,13 +1264,11 @@ static int lightfs_rename(struct inode *old_dir, struct dentry *old_dentry,
 			}
 			if (!ret) {
 				ret = -ENOTEMPTY;
-	lightfs_error(__func__, "NOTEMPTY\n");
 				goto abort;
 			}
 		} else { // old is a regular file
 			if (S_ISDIR(new_inode->i_mode)) {
 				ret = -ENOTDIR;
-	lightfs_error(__func__, "NOTDIR2\n");
 				goto abort;
 			}
 		}
@@ -2284,6 +2280,10 @@ static int lightfs_sync_fs(struct super_block *sb, int wait)
 	return 0;
 }
 
+static int lightfs_super_statfs(struct dentry *d, struct kstatfs *buf) {
+	return 0;
+}
+
 static int lightfs_dir_release(struct inode *inode, struct file *filp)
 {
 #ifdef CALL_TRACE_TIME
@@ -2366,6 +2366,7 @@ static const struct super_operations lightfs_super_ops = {
 	.evict_inode		= lightfs_evict_inode,
 	.put_super		= lightfs_put_super,
 	.sync_fs		= lightfs_sync_fs,
+	.statfs			= lightfs_super_statfs,
 };
 
 /*

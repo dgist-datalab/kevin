@@ -82,7 +82,7 @@ static void recv_req (void) {
 				}
 			} else {
 				if (ureq->ubuf_len != 0) { // GET
-					pr_info("[recv req] req->extra: %p\n", req->extra);
+					//pr_info("[recv req] req->extra: %p\n", req->extra);
 				//pr_info("[recv req] user %p, user->id: %d user->buf_len: %d, user->buf: %p, user->ret_buf: %p user->ubuf_len: %d\n", req->user, req->user->id, req->user->buf_len, req->user->buf, req->user->ret_buf, req->user->ubuf_len);
 				//memcpy(req->user, ureq, sizeof(struct cheeze_req_user));
 					if (req->extra != NULL) {
@@ -128,7 +128,6 @@ static int shm_kthread(void *unused)
 		recv_req();
 		cond_resched();
 	}
-	pr_info("shm stop\n");
 
 	return 0;
 }
@@ -282,7 +281,6 @@ void shm_exit(void)
 	if (!shm_task)
 		return;
 
-	pr_info("asd\n");
 	kthread_stop(shm_task);
 	shm_task = NULL;
 }

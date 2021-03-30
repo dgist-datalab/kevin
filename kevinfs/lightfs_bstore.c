@@ -421,18 +421,6 @@ int lightfs_bstore_env_open(struct lightfs_sb_info *sbi)
 	if (r)
 		goto err_close_env;
 
-	/* set the cleaning and checkpointing thread periods */
-	db_env_flags = 60; /* 60 s */
-	r = db_env->checkpointing_set_period(db_env, db_env_flags);
-	if (r)
-		goto err_close;
-	db_env_flags = 1; /* 1s */
-	r = db_env->cleaner_set_period(db_env, db_env_flags);
-	if (r)
-		goto err_close;
-	db_env_flags = 1000; /* 1000 ms */
-	db_env->change_fsync_log_period(db_env, db_env_flags);
-
 	XXX_db_env = sbi->db_env;
 	XXX_data_db = sbi->data_db;
 	XXX_meta_db = sbi->meta_db;
@@ -444,7 +432,6 @@ int lightfs_bstore_env_open(struct lightfs_sb_info *sbi)
 
 	return 0;
 
-err_close:
 	sbi->data_db->close(sbi->data_db, 0);
 	sbi->meta_db->close(sbi->meta_db, 0);
 	sbi->cache_db->close(sbi->cache_db, 0);

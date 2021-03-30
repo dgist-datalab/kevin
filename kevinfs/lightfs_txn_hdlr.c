@@ -760,6 +760,12 @@ int lightfs_bstore_txn_commit(DB_TXN *txn, uint32_t flags)
 
 	spin_lock_irqsave(&txn_hdlr->txn_spin, irqflags);
 
+	if (!txn->cnt) {
+		lightfs_txn_free(txn);
+		spin_unlock_irqrestore(&txn_hdlr->txn_spin, irqflags);
+		return 0;
+	}
+
 	if (txn->state & TXN_READ) {
 #ifdef TXN_TIME_CHECK
 		lightfs_get_time(&txn->commit);
@@ -981,7 +987,11 @@ static void* lightfs_c_txn_transfer_cb(void *data) {
 		return NULL;
 	}
 
-	queue_work(txn_hdlr->commit_workq, &c_txn->work);
+	if (txn_hdlr->commit_workq) {
+		queue_work(txn_hdlr->commit_workq, &c_txn->work);
+	} else {
+		lightfs_c_txn_commit(c_txn);
+	}
 	return NULL;
 }
 
@@ -1227,7 +1237,13 @@ int lightfs_txn_hdlr_run(void *data)
 
 	while (1) {
 		if (kthread_should_stop()) {
-			break;
+			spin_lock_irqsave(&txn_hdlr->txn_spin, flags);
+			if ((!txn_hdlr->txn_cnt) && list_empty(&txn_hdlr->sync_txn_list) && list_empty(&txn_hdlr->txn_list)) {
+				spin_unlock_irqrestore(&txn_hdlr->txn_spin, flags);
+				pr_info("txn handler stop");
+				break;
+			}
+			spin_unlock_irqrestore(&txn_hdlr->txn_spin, flags);
 		}
 
 txn_repeat:
@@ -1464,10 +1480,10 @@ int lightfs_txn_hdlr_destroy(void)
 		destroy_workqueue(txn_hdlr->workqs[i]);
 	}
 	kfree(txn_hdlr->workqs);
-	flush_workqueue(txn_hdlr->commit_workq);
-	destroy_workqueue(txn_hdlr->commit_workq);
 	lightfs_queue_exit(txn_hdlr->workq_tags);
 	kthread_stop(txn_hdlr->tsk);
+	flush_workqueue(txn_hdlr->commit_workq);
+	destroy_workqueue(txn_hdlr->commit_workq);
 	txn_hdlr->db_io->close(txn_hdlr->db_io);
 	kmem_cache_destroy(lightfs_dbc_buf_cachep);
 	kmem_cache_destroy(lightfs_dbc_cachep);

@@ -185,9 +185,9 @@ static int lightfs_ht_cache_get (DB *db, DB_TXN *txn, DBT *key, DBT *value, enum
 		down_read(&ht_item->lock);
 		hash_for_each_possible(lightfs_ht_cache, cache_item, hnode, hkey) {
 			if (cache_item->fp == fp && !lightfs_keycmp(cache_item->key.data, cache_item->key.size, key->data, key->size)) {
-				if (cache_item->is_weak_del) {
+				if (cache_item->is_weak_del && cache_item->is_evicted) {
 					memcpy(value->data, cache_item->value.data, value->size);
-					cache_item->is_weak_del = 0;
+					cache_item->is_weak_del = cache_item->is_evicted = 0;
 					//spin_unlock_bh(&ht_item->lock);
 					//spin_unlock(&ht_item->lock);
 					up_read(&ht_item->lock);
@@ -216,6 +216,7 @@ int lightfs_ht_cache_group_eviction (DBT *key)
 	uint32_t fp = lightfs_ht_func(SSEED, key->data, key->size);
 	struct rb_node *rb_node = NULL;
 	int ret = 0;
+	int child = 0;
 
 	hash_for_each_possible(lightfs_ht_lock, ht_item, hnode, hkey) {
 		down_write(&ht_item->lock);
@@ -236,9 +237,16 @@ int lightfs_ht_cache_group_eviction (DBT *key)
 	}
 	if (child_cache_item) {
 		DB_TXN *txn;
+		if (!child_cache_item->key.size) {
+			return 0;
+		}
+repeat:
 		TXN_GOTO_LABEL(retry);
 		lightfs_bstore_txn_begin(sbi->db_env, NULL, &txn, TXN_MAY_WRITE);
 		while (rb_node) {
+			if (++child > GROUP_EVICTION_TRESHOLD) {
+				break;
+			}
 			child_cache_item = container_of(rb_node, struct ht_cache_item, rb_node);
 			//print_key(__func__, child_cache_item->key.data, child_cache_item->key.size);
 			ret = lightfs_bstore_meta_put_tmp(NULL, &child_cache_item->key, txn, child_cache_item->value.data, NULL, 0);
@@ -250,6 +258,10 @@ int lightfs_ht_cache_group_eviction (DBT *key)
 		} else {
 			ret = lightfs_bstore_txn_commit(txn, DB_TXN_NOSYNC);
 			COMMIT_JUMP_ON_CONFLICT(ret, retry);
+		}
+		if (child > GROUP_EVICTION_TRESHOLD) {
+			child = 0;
+			goto repeat;
 		}
 	}
 	return 0;
@@ -300,6 +312,7 @@ static int lightfs_ht_cache_put (DB *db, DB_TXN *txn, DBT *key, DBT *value, enum
 		lightfs_ht_cache_item_init(&cache_item, key, value);
 		cache_item->fp = fp;
 		cache_item->is_weak_del = 0;
+		cache_item->is_evicted = 0;
 		if (is_dir) {
 			lightfs_dcache_entry_init(cache_item);
 		}

@@ -1,0 +1,1 @@
+KDIR=$(shell uname -r)

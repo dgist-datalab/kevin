@@ -22,6 +22,7 @@ struct ht_lock_item {
 struct ht_cache_item {
 	DBT key, value;
 	bool is_weak_del;
+	bool is_evicted;
 	uint32_t fp;
 	struct hlist_node hnode;
 	struct rb_node rb_node;

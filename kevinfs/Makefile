@@ -1,7 +1,7 @@
 ifdef M
-	include $(M)/.mkinclude
+	include $(M)/mkinclude
 else
-	include $(PWD)/.mkinclude
+	include $(PWD)/mkinclude
 endif
 
 obj-m += lightfs.o
@@ -11,14 +11,13 @@ KBUILD_CFLAGS +=  -I./cheeze \
 				  -DLIGHTFS \
 				  -DPINK \
 				  -DWB \
-				  -DIS_IN_VM \
 				  -DGROUP_COMMIT \
 				  -DGET_MULTI \
 				  -DRB_LOCK \
 				  -DSUPER_NOLOCK \
-				  -DGROUP_EVICTION \
 				  -DREADA \
 #				  -DMONITOR \
+#				  -DIS_IN_VM \
 #				  -DPRINT_QD \
 #				  -DDISABLE_DCACHE \
 #				  -DLIGHTFS_DEBUG \
@@ -27,6 +26,7 @@ KBUILD_CFLAGS +=  -I./cheeze \
 #				  -DCALL_TRACE_TIME \
 #				  -DTIME_CHECK \
 #				  -DTXN_BUFFER \
+#				  -DGROUP_EVICTION \
 #				  -DTXN_TIME_CHECK \
 #				  -DRB_CACHE \
 #				  -DCHEEZE \

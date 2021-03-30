@@ -503,31 +503,32 @@ int lightfs_io_close (DB_IO *db_io)
 	cheeze_exit();
 
 #ifdef MONITOR
-	pr_info("=== LIGHTFS IO SUMMARY ===\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		[%30s]: %ld\n \
-		==========================\n\n"
+	pr_info("\n \
+		========= LIGHTFS IO SUMMARY =========\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r[%30s]: %ld\n \
+		\r======================================\n\n"
 			, cmds.name[LIGHTFS_META_GET], atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_META_GET])
 			, cmds.name[LIGHTFS_META_SET], atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_META_SET])
 			, cmds.name[LIGHTFS_META_SYNC_SET], atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_META_SYNC_SET])
@@ -551,7 +552,7 @@ int lightfs_io_close (DB_IO *db_io)
 			, cmds.name[LIGHTFS_GET_MULTI_REAL], atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_GET_MULTI_REAL])
 			, cmds.name[LIGHTFS_GET_MULTI_READA_REAL], atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_GET_MULTI_READA_REAL])
 			, cmds.name[LIGHTFS_DEL_MULTI_REAL], atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_DEL_MULTI_REAL])	);
-	pr_info("DEL_MULTI_REAL: %ld\n", atomic64_read(&db_io_XXX->mon.ops_num[LIGHTFS_DEL_MULTI_REAL]));
+	pr_info("\n");
 #endif
 
 	kfree(db_io);
@@ -583,6 +584,8 @@ int lightfs_io_create (DB_IO **db_io) {
 	(*db_io)->get_multi = lightfs_io_get_multi;
 	(*db_io)->get_multi_reada = lightfs_io_get_multi_reada;
 #endif
+
+	lightfs_error(__func__, "cheeze_init %d\n", cheeze_init());
 
 #ifdef MONITOR
 	for (i = 0; i < OPS_CNT; i++) {
