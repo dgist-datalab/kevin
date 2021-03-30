@@ -18,7 +18,7 @@ until timeout 0.5 ssh root@10.150.21.48 true 2>/dev/null; do sleep 0.5; done
 echo "VM online"
 
 # Setup VCU
-ssh root@10.150.21.48 'sync; /home/kukania/amf-driver/programFPGA/program-vcu108.sh; sync' || true
+ssh root@10.150.21.48 'sync; /home/flashdriver/amf-driver/programFPGA/program-vcu108.sh; sync' || true
 
 echo "VM setup done"
 

@@ -2,41 +2,41 @@
 
 # Usage:
 # cd ~/filebench_vmlog-20201015-010514
-# ~/koofs/benchmark/genstats.sh
+# ~/kevin/benchmark/genstats.sh
 
 # set -eo pipefail
 
-echo "Generating fs/workload/kukasum"
+echo "Generating fs/workload/flashdriversum"
 echo
 
 ls -d */ | sort | while read fs; do
   cd $fs
   echo $fs
 
-  echo "Saving to $(pwd)/kukasum"
+  echo "Saving to $(pwd)/flashdriversum"
   (
-    cat kukania | tail -n30 | grep '^MAPPING[RW] \|^DATA[RW] ' | tr ' ' '\t'
+    cat flashdriver | tail -n30 | grep '^MAPPING[RW] \|^DATA[RW] ' | tr ' ' '\t'
     echo -ne "GCR\t"
-    echo $(cat kukania | tail -n30 | grep '^GCMR \|^GCDR \|^GCMR_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
+    echo $(cat flashdriver | tail -n30 | grep '^GCMR \|^GCDR \|^GCMR_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
     echo -ne "GCW\t"
-    echo $(cat kukania | tail -n30 | grep '^GCMW \|^GCDW \|^GCMW_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
-  ) | tee kukasum
+    echo $(cat flashdriver | tail -n30 | grep '^GCMW \|^GCDW \|^GCMW_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
+  ) | tee flashdriversum
   echo
 
   cd ..
   echo
 done
 
-echo "Generating total kuka summary"
+echo "Generating total flash driver summary"
 
 echo -ne "$workload"'\t'
-cat $(ls -d */ | head -n1)/kukasum | awk '{print $1}' | tr '\n' '\t'
+cat $(ls -d */ | head -n1)/flashdriversum | awk '{print $1}' | tr '\n' '\t'
 echo
 ls -d */ | sort | while read fs; do
   echo -ne "\"$fs\""'\t'
-  LINE=$(wc -l $(ls $(ls -d */ | head -n1)/kukasum) | awk '{print $1}')
+  LINE=$(wc -l $(ls $(ls -d */ | head -n1)/flashdriversum) | awk '{print $1}')
   for i in $(seq 1 $LINE); do
-    awk "NR==$i{print \$2}" $fs/kukasum | tr '\n' '\t'
+    awk "NR==$i{print \$2}" $fs/flashdriversum | tr '\n' '\t'
   done
   echo
 done | sed \

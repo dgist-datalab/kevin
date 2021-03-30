@@ -23,7 +23,7 @@
 # Use is subject to license terms.
 #
 
-set $dir=/mnt/ext4
+set $dir=/bench
 set $nfiles=400000
 set $meandirwidth=100
 #set $filesize=cvar(type=cvar-gamma,parameters=mean:131072;gamma:1.5)

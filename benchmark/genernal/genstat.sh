@@ -2,7 +2,7 @@
 
 # Usage:
 # cd ~/filebench_vmlog-20201015-010514
-# ~/koofs/benchmark/genstats.sh
+# ~/kevin/benchmark/genstats.sh
 
 # set -eo pipefail
 
@@ -57,23 +57,23 @@ for i in $(seq 1 $LINE); do
   echo
 done
 
-echo "Generating fs/workload/kukasum"
+echo "Generating fs/workload/flashdriversum"
 echo
 
 ls -d */ | sort | while read fs; do
   cd $fs
   echo $fs
-  mkdir -p kukasum
+  mkdir -p flashdriversum
 
   ls perf/ | sort | while read workload; do
-    echo "Saving to $(pwd)/kukasum/$workload"
+    echo "Saving to $(pwd)/flashdriversum/$workload"
     (
-      cat kukania/$workload | tail -n30 | grep '^MAPPING[RW] \|^DATA[RW] ' | tr ' ' '\t'
+      cat flashdriver/$workload | tail -n30 | grep '^MAPPING[RW] \|^DATA[RW] ' | tr ' ' '\t'
       echo -ne "GCR\t"
-      echo $(cat kukania/$workload | tail -n30 | grep '^GCMR \|^GCDR \|^GCMR_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
+      echo $(cat flashdriver/$workload | tail -n30 | grep '^GCMR \|^GCDR \|^GCMR_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
       echo -ne "GCW\t"
-      echo $(cat kukania/$workload | tail -n30 | grep '^GCMW \|^GCDW \|^GCMW_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
-    ) | tee kukasum/$workload
+      echo $(cat flashdriver/$workload | tail -n30 | grep '^GCMW \|^GCDW \|^GCMW_DGC '| awk '{print $2}' | tr '\n' '+')0 | bc
+    ) | tee flashdriversum/$workload
     echo
   done
 
@@ -81,17 +81,17 @@ ls -d */ | sort | while read fs; do
   echo
 done
 
-echo "Generating total kuka summary"
+echo "Generating total flash driver summary"
 
-ls $(ls -d */ | head -n1)/kukasum/ | while read workload; do
+ls $(ls -d */ | head -n1)/flashdriversum/ | while read workload; do
   echo -ne "$workload"'\t'
-  cat $(ls -d */ | head -n1)/kukasum/$workload | awk '{print $1}' | tr '\n' '\t'
+  cat $(ls -d */ | head -n1)/flashdriversum/$workload | awk '{print $1}' | tr '\n' '\t'
   echo
   ls -d */ | sort | while read fs; do
     echo -ne "\"$fs\""'\t'
-    LINE=$(wc -l $(ls $(ls -d */ | head -n1)/kukasum/$workload) | awk '{print $1}')
+    LINE=$(wc -l $(ls $(ls -d */ | head -n1)/flashdriversum/$workload) | awk '{print $1}')
     for i in $(seq 1 $LINE); do
-      awk "NR==$i{print \$2}" $fs/kukasum/$workload | tr '\n' '\t'
+      awk "NR==$i{print \$2}" $fs/flashdriversum/$workload | tr '\n' '\t'
     done
     echo
   done

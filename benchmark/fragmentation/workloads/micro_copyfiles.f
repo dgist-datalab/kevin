@@ -23,7 +23,7 @@
 # Use is subject to license terms.
 #
 
-set $dir=/mnt/ext4
+set $dir=/bench
 set $nfiles=2000000
 set $meandirwidth=100
 set $meanfilesize=4k

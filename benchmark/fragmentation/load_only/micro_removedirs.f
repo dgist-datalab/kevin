@@ -24,7 +24,7 @@
 #
 # Creates a fileset with $ndirs empty leaf directories then rmdir's all of them
 #
-set $dir=/mnt/ext4
+set $dir=/bench
 set $ndirs=4000000
 set $meandirwidth=100
 set $nthreads=16

@@ -23,13 +23,13 @@
 # Use is subject to license terms.
 #
 
-set $dir=/mnt/ext4
-set $nfiles=8000000
+set $dir=/media
+set $nfiles=4000000
 set $meandirwidth=100
 set $meanfilesize=4k
 set $iosize=1m
 set $nthreads=16
-set $count=56000000
+set $count=28000000
 
 set mode quit firstdone
 

@@ -2,7 +2,7 @@
 
 # Usage:
 # cd ~/filebench_vmlog-20201015-010514
-# ~/koofs/benchmark/genstats.sh
+# ~/kevin/benchmark/genstats.sh
 
 # set -eo pipefail
 

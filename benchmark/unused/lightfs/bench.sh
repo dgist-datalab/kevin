@@ -11,4 +11,6 @@
 #filebench -f tmp/webserver_gamma_fuse.f
 #filebench -f tmp/tmp.f
 #filebench -f tmp/micro_makedirs.f
-filebench -f tmp/micro_removedirs.f
+#filebench -f tmp/micro_removedirs.f
+filebench -f tmp/micro_copyfiles.f
+#filebench -f tmp/micro_makedirs.f

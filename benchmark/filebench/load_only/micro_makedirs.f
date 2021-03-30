@@ -24,7 +24,7 @@
 #
 # Creates a directory with $ndirs potential leaf directories, than mkdir's them
 #
-set $dir=/mnt/ext4
+set $dir=/bench
 set $ndirs=8000000
 set $meandirwidth=100
 set $nthreads=16

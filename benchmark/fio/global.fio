@@ -1,6 +1,5 @@
 ioengine=libaio
-filename=/mnt/ext4/file2
-#filename=/mnt/ramdisk/file
+filename=/bench/file2
 #filename=/dev/cheeze0
 
 bs=4K

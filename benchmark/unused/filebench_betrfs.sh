@@ -5,9 +5,10 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-log_path="/log/tpcc_vmlog-$1-$(date +'%Y%m%d-%H%M%S')"
+kevin_root_dir="/home/koo/src/koofs"
+log_path="/log/filebench_vmlog-$1-$(date +'%Y%m%d-%H%M%S')"
 dev_path="/dev/cheeze0"
-target_dir="/bench"
+ext4_dir="/ext4"
 
 mkdir -p $log_path
 
@@ -26,7 +27,7 @@ esac
 exec > $log_path/totallog 2>&1
 
 remove_data() {
-    rm -rf $target_dir/*
+    rm -rf $ext4_dir/*
 }
 
 flush() {
@@ -40,27 +41,26 @@ flush() {
 destroy() {
     rm -rf /tmp/filebench-shm-*
     sleep 5
-    umount $target_dir
+    ${clean_sh}
     sleep 5
 }
 
 do_ext4() {
-    workload=tpcc
-    #for workload in *.f
-    #do
+    for workload in *.f
+    do
         echo "=============================================="
         echo ${workload}
         mkdir -p \
             "$output_dir_org_perf" \
             "$output_dir_org_cnt" \
-            "$output_dir_org_flashdriver" \
+            "$output_dir_org_kukania" \
             "$output_dir_org_stat" \
             "$output_dir_org_vmstat" \
             "$output_dir_org_slab" \
             "$output_dir_org_dmesg"
         output_file_perf="${output_dir_org_perf}/${workload}"
         output_file_cnt="${output_dir_org_cnt}/${workload}"
-        output_file_flashdriver="${output_dir_org_flashdriver}/${workload}"
+        output_file_kukania="${output_dir_org_kukania}/${workload}"
         output_file_stat="${output_dir_org_stat}/${workload}"
         output_file_vmstat="${output_dir_org_vmstat}/${workload}"
         output_file_slab="${output_dir_org_slab}/${workload}"
@@ -69,20 +69,15 @@ do_ext4() {
         dmesg -c > /dev/null 2>&1
 
         ${kevin_root_dir}/real/setup_cheeze.sh
-        ssh root@pt1 "cd /home/flashdriver/Koofs_proj/FlashFTLDriver/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
-        while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
-        tail -f ${output_file_flashdriver} | sed '/now waiting req/ q'
+        ssh root@pt1 "cd /home/kukania/Koofs_proj/FlashFTLDriver/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_kukania 2>&1 < /dev/null" &
+        while [ ! -f ${output_file_kukania} ]; do sleep 0.1; done
+        tail -f ${output_file_kukania} | sed '/now waiting req/ q'
         now=$(date +"%T")
         echo "Current time : $now" >> ${output_file_perf}
 
-        service mysql stop
-        while pgrep -f mysql > /dev/null; do echo mysql still up; sleep 1; done
+        ${fs_sh}
 
-        ${fs_sh} ${dev_path}
         #sleep 2000
-
-        mkdir ${target_dir}/mysql
-        mysqld --initialize-insecure
         flush
         sleep 5
 
@@ -93,29 +88,14 @@ do_ext4() {
 
         sleep 5
 
-        service mysql start
-        until pgrep -f mysql > /dev/null; do echo mysql still down; sleep 1; done
-        sleep 10
-
-        cd /home/ssjy806/tpcc/
-        ./total.sh >> ${output_file_perf} 2>&1
-        cd -
+        filebench -f ${workload} >> ${output_file_perf}
 
         #sleep 300
         df >> ${output_file_perf}
 
-        #echo -n "Total directory count: " >> ${output_file_perf}
-        #find ${target_dir} -type d | wc -l >> ${output_file_perf}
-
-        #echo -n "Total file count: " >> ${output_file_perf}
-        #find ${target_dir} -type f | wc -l >> ${output_file_perf}
-
-        sleep 1
+        sleep 30
 
         slabtop -o --sort=c > ${output_file_slab} 2>&1
-
-        service mysql stop
-        sleep 5
 
         destroy
 
@@ -133,26 +113,22 @@ do_ext4() {
         ps -ef | grep dmesg | grep -v grep | awk '{print "kill -15 " $2}' | sh
         while pgrep -f dmesg > /dev/null; do sleep 1; done
         dmesg -c > /dev/null 2>&1
-    #done
+    done
 }
 
 echo 0 > /proc/sys/kernel/randomize_va_space
 
-# lock ${target_dir} in case of mount failures
-umount -lf ${target_dir} 2>/dev/null
-umount -lf ${target_dir} 2>/dev/null
-umount -lf ${target_dir} 2>/dev/null
-mount -t tmpfs -o ro nodev ${target_dir}
-
-for test in ext4_metadata_journal ext4_data_journal xfs f2fs btrfs
+#for test in ext4_metadata_journal ext4_data_journal xfs f2fs btrfs
+for test in betrfs-nc betrfs-c
 do
     output_dir_org_perf="$log_path/$test/perf"
     output_dir_org_cnt="$log_path/$test/trace"
-    output_dir_org_flashdriver="$log_path/$test/flashdriver"
+    output_dir_org_kukania="$log_path/$test/kukania"
     output_dir_org_stat="$log_path/$test/iostat"
     output_dir_org_vmstat="$log_path/$test/vmstat"
     output_dir_org_slab="$log_path/$test/slab"
     output_dir_org_dmesg="$log_path/$test/dmesg"
-    fs_sh="${kevin_root_dir}/benchmark/$test.sh"
+    fs_sh="/mnt/home/koo/src/betrfs/${test}.sh"
+    clean_sh="/mnt/home/koo/src/betrfs/${test}-clean.sh"
     do_ext4
 done
