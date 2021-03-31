@@ -8,7 +8,7 @@ bold() {
 
 # Safe rm to prevent `rm -rf /*`
 for var in "$@"; do
-  if echo "$var" | grep -q '^/dev'; then
+  if [[ "$var" == "/dev" ]]; then
     echo
     bold "Attempted to rm -rf /, please review your script"
     bold $0 ${1:+"$@"}
