@@ -32,9 +32,14 @@
 #define SHM_ADDR1 0x840000000
 #define SHM_ADDR2 0x880000000
 #else
+/*
 #define SHM_ADDR0 0x3e40000000
 #define SHM_ADDR1 0x3e80000000
-#define SHM_ADDR2 0x3ec0000000 
+#define SHM_ADDR2 0x3ec0000000
+*/
+#define SHM_ADDR0 0x3f00000000
+#define SHM_ADDR1 0x3ec0000000
+#define SHM_ADDR2 0x3e80000000
 #endif
 
 #define SKIP INT_MIN
