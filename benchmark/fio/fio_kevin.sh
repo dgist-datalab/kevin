@@ -41,7 +41,7 @@ flush() {
     echo 1 > /proc/sys/vm/compact_memory
 }
 
-start_cheeze() {
+start_driver() {
     ssh root@pt1 "cd ${flash_driver_dir}/; ./koo_kv_driver -x -l 4 -c 3 -t 5 > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
     while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
     tail -f ${output_file_flashdriver} | sed '/now waiting req/ q'
@@ -51,7 +51,7 @@ start_cheeze() {
     cd -
 }
 
-kill_cheeze() {
+stop_driver() {
     rm -rf /tmp/filebench-shm-*
     sleep 60
     umount $target_dir
@@ -125,16 +125,16 @@ do
 
     alias=seqwrite
     setup_log
-    start_cheeze
+    start_driver
 
     workload=seqwrite.fio
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=seqwrite_seqread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=seqwrite.fio
     run_bench
@@ -144,10 +144,10 @@ do
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=seqwrite_randread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=seqwrite.fio
     run_bench
@@ -157,19 +157,19 @@ do
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=randwrite
     setup_log
-    start_cheeze
+    start_driver
 
     workload=randwrite.fio
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=randwrite_seqread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=randwrite.fio
     run_bench
@@ -179,10 +179,10 @@ do
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=randwrite_randread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=randwrite.fio
     run_bench
@@ -192,5 +192,5 @@ do
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
 done

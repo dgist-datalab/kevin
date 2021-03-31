@@ -54,7 +54,7 @@ mkmount() {
     ${fs_sh} ${dev_path}
 }
 
-start_cheeze() {
+start_driver() {
     ${kevin_root_dir}/benchmark/setup_cheeze.sh
     echo $udelay > /sys/module/cheeze/parameters/delay_factor_ns
     ssh root@pt1 "cd ${flash_ftl_driver_dir}/; export MS_TIME_SL=$udelay; chrt --rr 99 ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
@@ -63,7 +63,7 @@ start_cheeze() {
     mkmount
 }
 
-kill_cheeze() {
+stop_driver() {
     umount $target_dir
     rmmod cheeze
     ssh root@pt1 'kill -2 $(pgrep -fx ./cheeze_block_driver); while pgrep -fx ./cheeze_block_driver > /dev/null; do sleep 1; done'
@@ -149,16 +149,16 @@ do
 
 #    alias=seqwrite
 #    setup_log
-#    start_cheeze
+#    start_driver
 
 #    workload=seqwrite.fio
 #    run_bench
 #    flush
 
-#    kill_cheeze
+#    stop_driver
     alias=seqwrite_seqread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=seqwrite.fio
     run_bench
@@ -168,13 +168,13 @@ do
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
 done
 
 exit 0
     alias=seqwrite_randread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=seqwrite.fio
     run_bench
@@ -184,19 +184,19 @@ exit 0
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=randwrite
     setup_log
-    start_cheeze
+    start_driver
 
     workload=randwrite.fio
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=randwrite_seqread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=randwrite.fio
     run_bench
@@ -206,10 +206,10 @@ exit 0
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
     alias=randwrite_randread
     setup_log
-    start_cheeze
+    start_driver
 
     workload=randwrite.fio
     run_bench
@@ -219,5 +219,5 @@ exit 0
     run_bench
     flush
 
-    kill_cheeze
+    stop_driver
 done

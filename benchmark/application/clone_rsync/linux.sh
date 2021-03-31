@@ -53,7 +53,7 @@ mkmount() {
     ${fs_sh} ${dev_path}
 }
 
-start_cheeze() {
+start_driver() {
     ${kevin_root_dir}/benchmark/setup_cheeze.sh
     ssh root@pt1 "cd ${flash_ftl_driver_dir}/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
     while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
@@ -61,7 +61,7 @@ start_cheeze() {
     mkmount
 }
 
-kill_cheeze() {
+stop_driver() {
     umount $target_dir
     rmmod cheeze
     ssh root@pt1 'kill -2 $(pgrep -fx ./cheeze_block_driver); while pgrep -fx ./cheeze_block_driver > /dev/null; do sleep 1; done'
@@ -166,7 +166,7 @@ do
 
     setup_log
 
-    start_cheeze
+    start_driver
 
     workload=clone
     setup_log
@@ -176,5 +176,5 @@ do
     setup_log
     run_bench
 
-    kill_cheeze
+    stop_driver
 done

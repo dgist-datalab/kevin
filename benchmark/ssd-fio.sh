@@ -30,11 +30,11 @@ mkmount() {
     ${fs_sh} ${dev_path}
 }
 
-start_cheeze() {
+start_driver() {
     mkmount
 }
 
-kill_cheeze() {
+stop_driver() {
     umount $target_dir
 }
 
@@ -114,16 +114,16 @@ do
 
         alias=seqwrite
         setup_log
-        start_cheeze
+        start_driver
 
         workload=seqwrite.fio
         run_bench
         flush
 
-        kill_cheeze
+        stop_driver
         alias=seqwrite_seqread
         setup_log
-        start_cheeze
+        start_driver
 
         workload=seqwrite.fio
         run_bench
@@ -133,10 +133,10 @@ do
         run_bench
         flush
 
-        kill_cheeze
+        stop_driver
         alias=seqwrite_randread
         setup_log
-        start_cheeze
+        start_driver
 
         workload=seqwrite.fio
         run_bench
@@ -146,19 +146,19 @@ do
         run_bench
         flush
 
-        kill_cheeze
+        stop_driver
         alias=randwrite
         setup_log
-        start_cheeze
+        start_driver
 
         workload=randwrite.fio
         run_bench
         flush
 
-        kill_cheeze
+        stop_driver
         alias=randwrite_seqread
         setup_log
-        start_cheeze
+        start_driver
 
         workload=randwrite.fio
         run_bench
@@ -168,10 +168,10 @@ do
         run_bench
         flush
 
-        kill_cheeze
+        stop_driver
         alias=randwrite_randread
         setup_log
-        start_cheeze
+        start_driver
 
         workload=randwrite.fio
         run_bench
@@ -181,6 +181,6 @@ do
         run_bench
         flush
 
-        kill_cheeze
+        stop_driver
     done
 done

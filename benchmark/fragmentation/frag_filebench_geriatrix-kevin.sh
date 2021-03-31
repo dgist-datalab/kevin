@@ -10,8 +10,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
-log_path="/log/frag_filebench-$1-$(date +'%Y%m%d-%H%M%S')"
-dev_path="/dev/cheeze0"
+log_path="/log/frag_filebench-kevin-$1-$(date +'%Y%m%d-%H%M%S')"
 target_dir="/bench"
 
 mkdir -p $log_path
@@ -42,23 +41,24 @@ flush() {
     echo 1 > /proc/sys/vm/compact_memory
 }
 
-mkmount() {
-    ${fs_sh} ${dev_path}
-}
-
-start_driver() {
-    ${kevin_root_dir}/benchmark/setup_cheeze.sh
-    ssh root@pt1 "cd ${flash_ftl_driver_dir}/; ./cheeze_block_driver > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
+start_cheeze() {
+    ssh root@pt1 "cd ${flash_driver_dir}/; ./koo_kv_driver -x -l 4 -c 3 -t 5 > /$(cat /etc/hostname)/$output_file_flashdriver 2>&1 < /dev/null" &
     while [ ! -f ${output_file_flashdriver} ]; do sleep 0.1; done
     tail -f ${output_file_flashdriver} | sed '/now waiting req/ q'
-    mkmount
+
+    cd ${kevin_root_dir}/kevinfs/
+    ./run.sh ${target_dir}
+    cd -
 }
 
-stop_driver() {
+kill_cheeze() {
     rm -rf /tmp/filebench-shm-*
+    sleep 60
     umount $target_dir
-    rmmod cheeze
-    ssh root@pt1 'kill -2 $(pgrep -fx ./cheeze_block_driver); while pgrep -fx ./cheeze_block_driver > /dev/null; do sleep 1; done'
+    sleep 10
+    rmmod lightfs
+    ssh root@pt1 'kill -2 $(pgrep -fx ./koo_kv_driver); while pgrep -fx ./koo_kv_driver > /dev/null; do sleep 1; done'
+    sleep 5
 }
 
 # FlashDriver logs are saved at copy workload
@@ -67,14 +67,10 @@ setup_log() {
     echo ${workload}
     mkdir -p \
         "$output_dir_org_perf" \
-        "$output_dir_org_cnt" \
-        "$output_dir_org_stat" \
         "$output_dir_org_vmstat" \
         "$output_dir_org_slab" \
         "$output_dir_org_dmesg"
     output_file_perf="${output_dir_org_perf}/${workload}"
-    output_file_cnt="${output_dir_org_cnt}/${workload}"
-    output_file_stat="${output_dir_org_stat}/${workload}"
     output_file_vmstat="${output_dir_org_vmstat}/${workload}"
     output_file_slab="${output_dir_org_slab}/${workload}"
     output_file_dmesg="${output_dir_org_dmesg}/${workload}"
@@ -114,8 +110,6 @@ run_bench() {
         flush
         sleep 5
 
-        $kevin_root_dir/benchmark/general/blktrace.sh ${dev_path} ${output_file_cnt}
-        iostat -c -d -x ${dev_path} 1 -m > ${output_file_stat} &
         vmstat 1 | gawk '{now=strftime("%Y-%m-%d %T "); print now $0}' > ${output_file_vmstat} &
         dmesg -w > ${output_file_dmesg} &
 
@@ -136,10 +130,7 @@ run_bench() {
 
         slabtop -o --sort=c > ${output_file_slab} 2>&1
 
-        ps -ef | grep blktrace | grep -v grep | awk '{print "kill -2 " $2}' | sh
-        ps -ef | grep iostat | grep -v grep | awk '{print "kill -9 " $2}' | sh
         ps -ef | grep vmstat | grep -v grep | awk '{print "kill -9 " $2}' | sh
-        while pgrep -f blktrace > /dev/null; do sleep 1; done
 
         echo End workload
 
@@ -165,18 +156,14 @@ do
     for fload in *.f
     do
         output_dir_org_perf="$log_path/$fload/perf"
-        output_dir_org_cnt="$log_path/$fload/trace"
-        output_dir_org_stat="$log_path/$fload/iostat"
         output_dir_org_vmstat="$log_path/$fload/vmstat"
         output_dir_org_slab="$log_path/$fload/slab"
         output_dir_org_dmesg="$log_path/$fload/dmesg"
         output_file_flashdriver="$log_path/$fload/flashdriver"
 
-        fs_sh="${kevin_root_dir}/benchmark/general/$test.sh"
-
         setup_log
 
-        start_driver
+        start_cheeze
 
         workload=frag
         setup_log
@@ -186,6 +173,6 @@ do
         setup_log
         run_bench
 
-        stop_driver
+        kill_cheeze
     done
 done
