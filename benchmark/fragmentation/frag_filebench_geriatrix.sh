@@ -83,14 +83,14 @@ setup_log() {
 frag() {
     filebench -f ${kevin_root_dir}/benchmark/fragmentation/frag_file.f
     profile=agrawal
-    \time -v bash -c "~/geriatrix/geriatrix \
+    \time -v bash -c "${geriatrix_path}/geriatrix \
     -n $((128 * 1024 * 1024 * 1024)) \
     -u 0.4 \
     -r 42 \
     -m ${target_dir} \
-    -a ~/geriatrix/profiles/$profile/age_distribution.txt \
-    -s ~/geriatrix/profiles/$profile/size_distribution.txt \
-    -d ~/geriatrix/profiles/$profile/dir_distribution.txt \
+    -a ${geriatrix_path}/profiles/$profile/age_distribution.txt \
+    -s ${geriatrix_path}/profiles/$profile/size_distribution.txt \
+    -d ${geriatrix_path}/profiles/$profile/dir_distribution.txt \
     -x /tmp/age.out -y /tmp/size.out -z /tmp/dir.out \
     -t 8 \
     -i 5 \

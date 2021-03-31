@@ -29,7 +29,7 @@ ls -d */ | sort | while read fs; do
   echo "Using $TARGET"
 
   ls $TARGET | sort | while read workload; do
-    ~/$parser $TARGET$workload > parsed/$workload &
+    ${kevin_root_dir}/benchmark/general/$parser $TARGET$workload > parsed/$workload &
   done &
 
   cd ..

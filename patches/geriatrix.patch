@@ -1,0 +1,62 @@
+diff --git a/src/geriatrix.cpp b/src/geriatrix.cpp
+index 61ab51c..7180bb3 100644
+--- a/src/geriatrix.cpp
++++ b/src/geriatrix.cpp
+@@ -9,14 +9,14 @@
+ 
+ #include "geriatrix.h"
+ 
+-#ifdef NEED_POSIX_FALLOCATE
+ /*
+  * fake posix_fallocate by ftruncating the file larger and touching
+  * a byte in each block.... returns 0 on success, errno on fail(!!!)
+  * (this is at the top of the file so it can be included in the
+  * posix driver if needed...)
+  */
+-static int posix_fallocate(int fd, off_t offset, off_t len) {
++static const char zeros[4096] = { 0, };
++static int fake_fallocate(int fd, off_t offset, off_t len) {
+     struct stat st;
+     off_t newlen, curoff, lastoff, ptr;
+     ssize_t rv;
+@@ -29,25 +29,15 @@ static int posix_fallocate(int fd, off_t offset, off_t len) {
+     if (st.st_size > newlen)        /* not growing it, assume ok */
+         return(0);
+ 
+-    if (ftruncate(fd, newlen) < 0)   /* grow it */
+-        return(errno);
+-
+-    curoff = ((st.st_size + (st.st_blksize-1)) / st.st_blksize) * st.st_blksize;
+-    lastoff = ((newlen + (st.st_blksize-1)) / st.st_blksize) * st.st_blksize;
+-
+-    for (ptr = curoff ; ptr < lastoff ; ptr += st.st_blksize) {
+-        if (lseek(fd, ptr, SEEK_SET) < 0)
+-            return(errno);
+-        rv = write(fd, "", 1);    /* writes a null */
+-        if (rv < 0)
+-            return(errno);
+-        if (rv == 0)
+-            return(EIO);
+-    }
++    curoff = lseek(fd, 0, SEEK_CUR);
++    while (len > sizeof(zeros))
++        len -= write(fd, zeros, sizeof(zeros));
++    while (len)
++        len -= write(fd, zeros, len);
++    lseek(fd, curoff, SEEK_SET);
+ 
+     return(0);
+ }
+-#endif
+ 
+ /*
+  * backend configuration -- all filesystem aging I/O is routed here!
+@@ -55,7 +45,7 @@ static int posix_fallocate(int fd, off_t offset, off_t len) {
+ 
+ /* posix driver (the default) */
+ static struct backend_driver posix_backend_driver = {
+-    open, close, write, access, unlink, mkdir, posix_fallocate, stat, chmod,
++    open, close, write, access, unlink, mkdir, fake_fallocate, stat, chmod,
+ };
+ 
+ #ifdef DELTAFS     /* optional backend for cmu's deltafs */

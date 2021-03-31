@@ -84,6 +84,15 @@ setup_log() {
     output_file_vmstat="${output_dir_org_vmstat}/${workload}"
     output_file_slab="${output_dir_org_slab}/${workload}"
     output_file_dmesg="${output_dir_org_dmesg}/${workload}"
+    sync
+}
+
+clone() {
+    \time -v bash -c "cd ${target_dir}; git clone ${kernel_src}; cd -"
+}
+
+build() {
+    \time -v bash -c "cd ${target_dir}/linux-stable; make allyesconfig; make -j8; sync; cd -"
 }
 
 rsyncf() {
