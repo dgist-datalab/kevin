@@ -1446,7 +1446,8 @@ int lightfs_txn_hdlr_init(void)
 		}
 		lightfs_queue_push(txn_hdlr->workq_tags, (void*)((uint64_t)i));
 	}
-	txn_hdlr->commit_workq = alloc_workqueue("commit_queue", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+	//txn_hdlr->commit_workq = alloc_workqueue("commit_queue", WQ_MEM_RECLAIM | WQ_UNBOUND, 0);
+	txn_hdlr->commit_workq = NULL;
 
 	lightfs_error(__func__, "lightfs_io_create\n");
 	lightfs_io_create(&txn_hdlr->db_io);
@@ -1482,8 +1483,8 @@ int lightfs_txn_hdlr_destroy(void)
 	kfree(txn_hdlr->workqs);
 	lightfs_queue_exit(txn_hdlr->workq_tags);
 	kthread_stop(txn_hdlr->tsk);
-	flush_workqueue(txn_hdlr->commit_workq);
-	destroy_workqueue(txn_hdlr->commit_workq);
+	//flush_workqueue(txn_hdlr->commit_workq);
+	//destroy_workqueue(txn_hdlr->commit_workq);
 	txn_hdlr->db_io->close(txn_hdlr->db_io);
 	kmem_cache_destroy(lightfs_dbc_buf_cachep);
 	kmem_cache_destroy(lightfs_dbc_cachep);
