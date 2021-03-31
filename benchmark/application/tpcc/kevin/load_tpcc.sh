@@ -123,7 +123,7 @@ run_bench() {
 
         ps -ef | grep vmstat | grep -v grep | awk '{print "kill -9 " $2}' | sh
 
-        ssh root@pt1 'kill -2 $(pgrep -fx ./koo_kv_driver); while pgrep -fx ./koo_kv_driver > /dev/null; do sleep 1; done'
+        ssh root@pt1 'kill -2 $(pgrep -f '^./koo_kv_driver'); while pgrep -f '^./koo_kv_driver' > /dev/null; do sleep 1; done'
         echo End workload
         sleep 5
 

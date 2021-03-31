@@ -34,7 +34,6 @@ remove_data() {
 }
 
 flush() {
-    sync
     echo 3 > /proc/sys/vm/drop_caches
     echo 1 > /proc/sys/vm/compact_memory
     echo 3 > /proc/sys/vm/drop_caches
@@ -107,7 +106,7 @@ run_bench() {
 
         ps -ef | grep vmstat | grep -v grep | awk '{print "kill -9 " $2}' | sh
 
-        ssh root@pt1 'kill -2 $(pgrep -fx ./koo_kv_driver); while pgrep -fx ./koo_kv_driver > /dev/null; do sleep 1; done'
+        ssh root@pt1 'kill -2 $(pgrep -f '^./koo_kv_driver'); while pgrep -f '^./koo_kv_driver' > /dev/null; do sleep 1; done'
         echo End workload
         sleep 5
 
@@ -118,12 +117,6 @@ run_bench() {
 }
 
 echo 0 > /proc/sys/kernel/randomize_va_space
-
-# lock ${target_dir} in case of mount failures
-umount -lf ${target_dir} 2>/dev/null
-umount -lf ${target_dir} 2>/dev/null
-umount -lf ${target_dir} 2>/dev/null
-mount -t tmpfs -o ro nodev ${target_dir}
 
 # rmmod cheeze after setup_vm.sh
 rmmod cheeze 2>/dev/null || true

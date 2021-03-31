@@ -57,7 +57,7 @@ stop_driver() {
     umount $target_dir
     sleep 10
     rmmod lightfs
-    ssh root@pt1 'kill -2 $(pgrep -fx ./koo_kv_driver); while pgrep -fx ./koo_kv_driver > /dev/null; do sleep 1; done'
+    ssh root@pt1 'kill -2 $(pgrep -f '^./koo_kv_driver'); while pgrep -f '^./koo_kv_driver' > /dev/null; do sleep 1; done'
     sleep 5
 }
 
