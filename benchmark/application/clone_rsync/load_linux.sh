@@ -67,7 +67,7 @@ kill_cheeze() {
     ssh root@pt1 'kill -2 $(pgrep -fx ./cheeze_block_driver); while pgrep -fx ./cheeze_block_driver > /dev/null; do sleep 1; done'
 }
 
-# Kukania logs are saved at copy workload
+# FlashDriver logs are saved at copy workload
 setup_log() {
     echo "=============================================="
     echo ${workload}
