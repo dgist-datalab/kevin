@@ -158,6 +158,7 @@ struct __lightfs_txn_hdlr {
 	bool state;
 	uint16_t syncing_cnt;
 	bool contention;
+	bool running;
 	spinlock_t txn_hdlr_spin;
 	spinlock_t txn_spin;
 	spinlock_t ordered_c_txn_spin;

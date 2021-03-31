@@ -46,6 +46,7 @@ static inline void txn_hdlr_alloc(struct __lightfs_txn_hdlr **__txn_hdlr)
 	spin_lock_init(&_txn_hdlr->txn_buffer_spin);
 	_txn_hdlr->current_workq_id = 0;
 	*__txn_hdlr = _txn_hdlr;
+	_txn_hdlr->running = 1;
 	
 }
 
