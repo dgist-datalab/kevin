@@ -295,7 +295,7 @@ static int lightfs_ht_cache_put (DB *db, DB_TXN *txn, DBT *key, DBT *value, enum
 				} else {
 					_dbt_no_alloc_copy(&cache_item->value, value);
 				}
-				cache_item->is_weak_del = cache_item->is_evicted = 1;
+				cache_item->is_weak_del = cache_item->is_evicted = 0;
 				//spin_unlock_bh(&ht_item->lock);
 				//spin_unlock(&ht_item->lock);
 				up_write(&ht_item->lock);
