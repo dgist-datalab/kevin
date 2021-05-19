@@ -8,6 +8,8 @@ KEVIN is composed of two main elements: **KevinSSD**(providing key-value interfa
 
 The original paper that introduced KEVIN is currently in the revision stage of [USENIX OSDI 2021](https://www.usenix.org/conference/osdi21).
 
+The archive snapshot with a detailed screencast used in the paper is available at [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4659803.svg)](https://doi.org/10.5281/zenodo.4659803).
+
 
 
 ## Prerequisites
